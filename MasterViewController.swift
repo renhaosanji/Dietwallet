@@ -70,13 +70,10 @@ class MasterViewController: UITableViewController  {
         try! realm.write {
             realm.add(data)
         }
+         print(realm.atIndex(i))
         
-        realm
-//        for var i=0; i<3;i++ {
-//             print(realm.atIndex(i))
-//        }
-//       
-        
+
+
     }
 
     // MARK: - Segues
