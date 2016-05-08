@@ -7,12 +7,14 @@
 //
 
 import UIKit
+import RealmSwift
 
-class MasterViewController: UITableViewController {
+class MasterViewController: UITableViewController  {
 
     var detailViewController: DetailViewController? = nil
     var objects = [AnyObject]()
-
+    var mytextField: UITextField?
+    
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -26,8 +28,10 @@ class MasterViewController: UITableViewController {
             self.detailViewController = (controllers[controllers.count-1] as! UINavigationController).topViewController as? DetailViewController
             
         }
+        self.realmAndPath()
+        
     }
-
+    
     override func viewWillAppear(animated: Bool) {
         self.clearsSelectionOnViewWillAppear = self.splitViewController!.collapsed
         super.viewWillAppear(animated)
@@ -41,8 +45,9 @@ class MasterViewController: UITableViewController {
     func messageBox(sender: AnyObject) {
         let alert = UIAlertController(title:"title",message:"message",preferredStyle: UIAlertControllerStyle.Alert)
         alert.addTextFieldWithConfigurationHandler { (textField)  ->Void in
-            var mytextField = textField
-            mytextField.placeholder = "enter you login ID"
+             self.mytextField = textField
+             self.mytextField!.placeholder = "enter you login ID"
+            
         }
         
         alert.addAction(UIAlertAction(title: "ok", style: UIAlertActionStyle.Default, handler: {
@@ -59,6 +64,19 @@ class MasterViewController: UITableViewController {
         objects.insert(NSDate(), atIndex: 0)
         let indexPath = NSIndexPath(forRow: 0, inSection: 0)
         self.tableView.insertRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
+        let data = Data()
+        data.money=(mytextField?.text)!;
+        var realm = try! Realm()
+        try! realm.write {
+            realm.add(data)
+        }
+        
+        realm
+//        for var i=0; i<3;i++ {
+//             print(realm.atIndex(i))
+//        }
+//       
+        
     }
 
     // MARK: - Segues
@@ -89,8 +107,10 @@ class MasterViewController: UITableViewController {
         let cell = tableView.dequeueReusableCellWithIdentifier("Cell", forIndexPath: indexPath)
 
         let object = objects[indexPath.row] as! NSDate
-   //     cell.textLabel!.text = object.description
-        cell.textLabel!.text = "5000"
+        cell.textLabel!.text = object.description
+    //    cell.textLabel!.text = mytextField?.text
+    //    cell.textLabel!.text = realm.indexPath
+
         return cell
     }
 
